@@ -2,6 +2,8 @@
 
 SlotWise MMU is a responsive campus resource booking prototype built for the Shortcut Asia Internship Challenge 2026. Students can discover rooms and equipment, reserve available slots, manage bookings, and claim waitlisted resources. Administrators can monitor utilization and manage campus resources.
 
+**Live application:** [https://slotwise-mmu.vercel.app](https://slotwise-mmu.vercel.app)
+
 ## Demo features
 
 - Student and administrator demo sign-in
