@@ -4,6 +4,8 @@ SlotWise MMU is a responsive campus resource booking prototype built for the Sho
 
 **Live application:** [https://slotwise-mmu.vercel.app](https://slotwise-mmu.vercel.app)
 
+**Full project documentation:** [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md)
+
 ## Demo features
 
 - Student and administrator demo sign-in
