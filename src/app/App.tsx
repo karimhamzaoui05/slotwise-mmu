@@ -15,6 +15,7 @@ import { AdminDashboard } from './components/screens/AdminDashboard';
 import { AdminResources } from './components/screens/AdminResources';
 import { Profile } from './components/screens/Profile';
 import { mockBookings, mockWaitlist } from './data/mockData';
+import { cancelBooking, claimWaitlistEntry, updateBookingStatus } from './domain/bookings';
 import type { Screen, Resource, Booking, BookingStatus, WaitlistEntry } from './types';
 
 // MARKER-MAKE-KIT-INVOKED
@@ -89,7 +90,11 @@ export default function App() {
   };
 
   const handleUpdateBooking = (id: string, status: BookingStatus) => {
-    setBookings((current) => current.map((booking) => booking.id === id ? { ...booking, status } : booking));
+    setBookings((current) => (
+      status === 'cancelled'
+        ? cancelBooking(current, id)
+        : updateBookingStatus(current, id, status)
+    ));
     toast.success(status === 'checked-in' ? 'Check-in completed.' : 'Booking cancelled.');
   };
 
@@ -118,22 +123,19 @@ export default function App() {
   };
 
   const handleClaimWaitlist = (entry: WaitlistEntry) => {
-    const claimedBooking: Booking = {
-      id: `claimed-${entry.id}`,
+    const result = claimWaitlistEntry(bookings, waitlistEntries, entry.id, {
+      bookingId: `claimed-${entry.id}`,
       bookingRef: `SW-2026-${Math.floor(1000 + Math.random() * 8999)}`,
-      resource: entry.resource,
-      date: entry.requestedDate,
-      startTime: entry.requestedTime.split(' - ')[0],
-      endTime: entry.requestedTime.split(' - ')[1] ?? '12:00 PM',
-      duration: 3,
-      status: 'confirmed',
-    };
-    setWaitlistEntries((current) => current.filter((item) => item.id !== entry.id));
-    setBookings((current) => [claimedBooking, ...current]);
+    });
+    setWaitlistEntries(result.waitlistEntries);
+    setBookings(result.bookings);
     toast.success('Waitlist slot claimed and added to your bookings.');
   };
 
   const handleCancelBooking = () => {
+    if (state.currentBooking) {
+      setBookings((current) => cancelBooking(current, state.currentBooking!.id));
+    }
     toast.success('Booking cancelled successfully.');
     navigate('my-bookings');
   };
@@ -197,6 +199,7 @@ export default function App() {
               navigate={navigate}
               onBook={handleBook}
               onJoinWaitlist={handleJoinWaitlist}
+              bookings={bookings}
             />
           )}
           {state.screen === 'booking-confirm' && state.currentBooking && (

@@ -262,7 +262,24 @@ A responsive web app was selected because students may book from phones while ad
 - Mobile layouts with narrow width and fixed bottom navigation.
 - Browser storage containing malformed data, handled by falling back to mock data.
 
-## 11. Challenges and solutions
+## 11. Automated testing
+
+The core booking rules are extracted into pure TypeScript functions so they can be tested independently from the React interface. The Vitest suite currently covers:
+
+- Partial and contained booking overlaps.
+- Back-to-back bookings that should remain valid.
+- Conflict filtering by resource and date.
+- Successful waitlist claiming, including booking creation and queue removal.
+- Rejection of waitlist entries whose slots have not been released.
+- Booking cancellation without mutating the original state.
+
+Run the suite with:
+
+```bash
+npm test
+```
+
+## 12. Challenges and solutions
 
 ### Turning a design prototype into maintainable code
 
@@ -284,7 +301,7 @@ The challenge recommends going deeper rather than broader. The application there
 
 A real authentication and database stack would improve production readiness, but it would also add configuration and failure points for reviewers. Demo access, realistic sample data, and local persistence make the complete workflow immediately testable.
 
-## 12. Current limitations
+## 13. Current limitations
 
 - Authentication is simulated and does not verify a real MMU account.
 - Data is stored in the reviewer's browser and is not shared between devices.
@@ -295,14 +312,14 @@ A real authentication and database stack would improve production readiness, but
 
 These limitations are deliberate for a one-week prototype and are clearly separated from the intended production architecture.
 
-## 13. Future improvements
+## 14. Future improvements
 
 ### Highest priority
 
 1. Add Supabase or PostgreSQL for shared persistent data.
 2. Implement MMU email authentication and role-based authorization.
 3. Enforce booking overlap rules with database constraints or transactions.
-4. Add automated unit and interaction tests for booking and waitlist logic.
+4. Expand the current unit suite with React interaction and end-to-end browser tests.
 5. Add server-generated reminders and release notifications.
 
 ### Product enhancements
@@ -315,7 +332,7 @@ These limitations are deliberate for a one-week prototype and are clearly separa
 - Accessibility testing with screen readers.
 - Resource recommendations based on capacity, location, and amenities.
 
-## 14. Setup instructions
+## 15. Setup instructions
 
 ### Requirements
 
@@ -347,6 +364,12 @@ npm run typecheck
 npm run build
 ```
 
+### Run automated tests
+
+```bash
+npm test
+```
+
 The production files are generated in `dist/`.
 
 ### Preview the production build
@@ -361,7 +384,7 @@ The GitHub repository is connected to Vercel. A successful push to the `main` br
 
 No environment variables are required for the current prototype.
 
-## 15. Suggested reviewer walkthrough
+## 16. Suggested reviewer walkthrough
 
 1. Open the live application and choose **Student Demo**.
 2. Review the dashboard and available resources.
@@ -374,6 +397,6 @@ No environment variables are required for the current prototype.
 9. Review the metrics and charts.
 10. Open Resource Management and test the add/edit and maintenance interfaces.
 
-## 16. Conclusion
+## 17. Conclusion
 
 SlotWise MMU demonstrates a complete product workflow rather than only a collection of screens. It addresses a realistic campus problem, includes meaningful booking and waitlist logic, handles important edge cases, and provides both student and administrative experiences. The current architecture keeps the prototype simple to run and review while leaving a clear path toward a secure, multi-user production system.

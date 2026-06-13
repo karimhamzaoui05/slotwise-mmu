@@ -50,4 +50,12 @@ npm run build
 npm run preview
 ```
 
+## Automated tests
+
+```bash
+npm test
+```
+
+The unit suite covers booking overlap detection, waitlist claiming, and booking cancellation.
+
 The project currently uses realistic local demo data so the complete product flow can be reviewed without external services. A production version would replace this layer with authenticated API and database services.

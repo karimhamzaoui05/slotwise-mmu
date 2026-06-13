@@ -24,3 +24,5 @@ pnpm-debug.log*
 # system files
 .DS_Store
 Thumbs.db
+~$*.docx
+docs/document_assets/

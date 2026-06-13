@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MapPin, Users, Clock, ChevronLeft, Wifi, Monitor, Zap, Wind, Camera, Wrench, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Resource, Screen, Booking } from '../../types';
+import { hasBookingConflict } from '../../domain/bookings';
 
 const amenityIcons: Record<string, { icon: LucideIcon; label: string }> = {
   wifi: { icon: Wifi, label: 'Wi-Fi' },
@@ -54,9 +55,10 @@ interface ResourceDetailsProps {
   navigate: (screen: Screen) => void;
   onBook: (booking: Booking) => void;
   onJoinWaitlist: (resource: Resource) => void;
+  bookings: Booking[];
 }
 
-export function ResourceDetails({ resource, navigate, onBook, onJoinWaitlist }: ResourceDetailsProps) {
+export function ResourceDetails({ resource, navigate, onBook, onJoinWaitlist, bookings }: ResourceDetailsProps) {
   const [selectedDay, setSelectedDay] = useState('Fri');
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [conflictError, setConflictError] = useState('');
@@ -73,9 +75,16 @@ export function ResourceDetails({ resource, navigate, onBook, onJoinWaitlist }: 
       return;
     }
 
-    // Demonstrates a conflict with an existing booking.
-    if (day === 'Fri' && slot === '16:00') {
-      setConflictError('You already have a booking that overlaps with Fri 16:00-17:00. Please choose a different time.');
+    const slotIndex = timeSlots.indexOf(slot);
+    const slotEnd = timeSlots[slotIndex + 1] ?? '22:00';
+    const conflicts = hasBookingConflict(bookings, {
+      resourceId: resource.id,
+      date: day === today ? 'Friday, 12 Jun 2026' : `${day}, 2026`,
+      startTime: slot,
+      endTime: slotEnd,
+    });
+    if (conflicts) {
+      setConflictError(`You already have a booking that overlaps with ${day} ${slot}-${slotEnd}. Please choose a different time.`);
       return;
     }
     setConflictError('');
